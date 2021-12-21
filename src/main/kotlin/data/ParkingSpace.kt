@@ -1,12 +1,13 @@
 package data
-import utils.Constants.MINUTES_IN_MILISECONDS
+import utils.Constants
+import utils.Constants.MINUTES_IN_MILLISECONDS
 import java.util.*
 
 data class ParkingSpace(var vehicle: Vehicle) {
 
     private val checkInTime = Calendar.getInstance()
     val parkedTime : Long
-    get() = (Calendar.getInstance().timeInMillis - checkInTime.timeInMillis) / MINUTES_IN_MILISECONDS
+    get() = (Calendar.getInstance().timeInMillis - checkInTime.timeInMillis) / MINUTES_IN_MILLISECONDS
 
     val discountCard: String? = null
     var vehiclesList: MutableSet<Vehicle> = mutableSetOf()
@@ -21,6 +22,19 @@ data class ParkingSpace(var vehicle: Vehicle) {
         }else{
             onError()
         }
+    }
+
+    fun calculateFee(): Int{
+        var totalFee : Int = 0
+        val parkedTime = 180000000
+        val vehicleType = Vehicle.VehicleType.CAR.fee
+        if(parkedTime <= Constants.TWO_HOURS_IN_MILLISECONDS){
+            totalFee = Vehicle.VehicleType.CAR.fee
+        }else {
+
+        }
+
+        return totalFee
     }
 
     private fun onSuccess(fee: Int){
