@@ -3,7 +3,7 @@ package data
 import java.util.*
 
 data class Vehicle(val plate: String?, val type: VehicleType?, val calendar: Calendar, val discountCard: String? ){
-    enum class VehicleType(val fee: Int){
+    enum class VehicleType(val fee: Long){
         CAR(20),
         BIKE(15),
         MINIBUS(25),

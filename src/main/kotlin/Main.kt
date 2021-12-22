@@ -12,40 +12,45 @@ class Main {
         fun main(args: Array<String>) {
             showMenu()
         }
-
+        var option = 0
         private fun showMenu() {
-            println("Welcome to AlkeParking \n select an option \n 1. Enter vehicle \n 2. Remove a vehicle \n 3. View plate list \n 4. See earnings")
-            val option = readLine()?.toInt()
-            println(option)
-
-            when (option) {
-                1 -> {
-                    println("Add vehicle type: \n 1. CAR \n 2. BIKE \n 3. BUS \n 4. MINIBUS ")
-                    val vehicleType = readLine()?.toInt()
-                    println("Please enter your plate:")
-                    val vehiclePlate = readLine()
-                    println("If you have discount card, enter the code, otherwise press enter")
-                    val discountCard = readLine()
-                    addVehicle(vehicleType, vehiclePlate, discountCard)
-                }
-                2 -> {
-                    println("If you want remove a vehicle enter your plate:")
-                    val vehiclePlate = readLine()
-                    removeVehicle(vehiclePlate)
-                }
-                3 -> parking.listVehicles(parking.vehicles)
-                4 -> {
-                    println("Your earnings are:")
+            while(option != 5) {
+                println("Welcome to AlkeParking \n select an option \n 1. Enter vehicle \n 2. Remove a vehicle \n 3. View plate list \n 4. See earnings")
+                option = readLine()?.toInt()!!
+                println(option)
+                when (option) {
+                    1 -> {
+                        println("Add vehicle type: \n 1. CAR \n 2. BIKE \n 3. BUS \n 4. MINIBUS ")
+                        val vehicleType = readLine()?.toInt()
+                        println("Please enter your plate:")
+                        val vehiclePlate = readLine()
+                        println("If you have discount card, enter the code, otherwise press enter")
+                        val discountCard = readLine()
+                        addVehicle(vehicleType, vehiclePlate, discountCard)
+                    }
+                    2 -> {
+                        println("If you want remove a vehicle enter your plate:")
+                        val vehiclePlate = readLine()
+                        removeVehicle(vehiclePlate)
+                    }
+                    3 -> parking.listVehicles(parking.vehicles)
+                    4 -> {
+                        println("Your earnings are:")
+                        parking.showTotalEarnings()
+                    }
+                    5 -> println("Bye?")
                 }
             }
         }
 
         private fun removeVehicle(vehiclePlate: String?) {
-            val carToRemove = parking.vehicles.elementAt(1)
+            val carToRemove = parking.vehicles.find {  it.plate == vehiclePlate }
+            val vehicleType = carToRemove?.type
+            val indexVehicle = parking.vehicles.indexOf(carToRemove)
             val parkingSpace = ParkingSpace(carToRemove)
             parkingSpace.getVehiclesList(parking.vehicles)
             parking.listVehicles(parking.vehicles)
-            carToRemove.plate?.let { parkingSpace.checkOutVehicle(it) }
+            carToRemove?.plate?.let { parkingSpace.checkOutVehicle(it, indexVehicle, vehicleType) }
         }
 
         private fun addVehicle(vehicleType: Int?, vehiclePlate: String?, discountCard: String?) {

@@ -1,43 +1,45 @@
 package data
 
 import utils.Constants
-import utils.Constants.MINUTES_IN_MILLISECONDS
+import utils.Singleton
 import java.util.*
 import kotlin.math.roundToInt
 
-data class ParkingSpace(var vehicle: Vehicle) {
+data class ParkingSpace(var vehicle: Vehicle?) {
 
     private val checkInTime = Calendar.getInstance()
-    private val parkedTime: Long
-        get() = (Calendar.getInstance().timeInMillis - checkInTime.timeInMillis) / MINUTES_IN_MILLISECONDS
-    var count = 0
-    val discountCard: String? = null
+    private val parkedTime: Long = 0
+    private var count: Long = Singleton.count
     var vehiclesList: MutableSet<Vehicle> = mutableSetOf()
-    private var totalEarnings: Pair<Int, Int> = Pair(0, 0)
+    private var totalEarnings: Pair<Long, Long> = Singleton.totalEarnings
 
     fun getVehiclesList(vehicles: MutableSet<Vehicle>) {
         vehiclesList = vehicles
     }
 
-    var backFee = 0
-    fun checkOutVehicle(plate: String) {
-        if (vehiclesList.elementAt(1).plate?.contains(plate) == true) {
-            count++
-            val fee = calculateFee(parkedTime, vehiclesList.elementAt(3), true)
-            val totalEarnings = onSuccess(fee, vehiclesList.elementAt(3), backFee, count)
+    private var backFee: Long = Singleton.backFee
+    fun checkOutVehicle(plate: String, indexVehicle: Int, vehicleType: Vehicle.VehicleType?) {
+        if (vehiclesList.elementAt(indexVehicle).plate?.contains(plate) == true) {
+            Singleton.count = Singleton.count + 1
+            val fee = calculateFee(vehiclesList.elementAt(indexVehicle), vehicleType)
+            val totalEarnings = onSuccess(fee, vehiclesList.elementAt(indexVehicle), Singleton.backFee, Singleton.count)
+            Singleton.totalEarnings = totalEarnings
         } else {
             onError()
         }
     }
 
-    private fun calculateFee(time: Long, vehicle: Vehicle, hasDiscountCard: Boolean): Int {
-        var totalFee: Int = 0
-        val parkedTime = 12600000 // 3 horas
-        val vehicleType = Vehicle.VehicleType.CAR.fee
-        var surplusTime: Int = 0
-        var surplusMinutes: Int = 0
+    private fun calculateFee(vehicle: Vehicle, vehicleType: Vehicle.VehicleType?): Long {
+        val parkedTime: Long = (Calendar.getInstance().timeInMillis - vehicle.calendar.timeInMillis)
+        var totalFee: Long = 0
+        var surplusTime: Long = 0
+        var surplusMinutes: Long = 0
+
+        val hasDiscountCard: Boolean = vehicle.discountCard?.isNotEmpty() == true
+
+
         if (parkedTime <= Constants.TWO_HOURS_IN_MILLISECONDS) {
-            totalFee = Vehicle.VehicleType.CAR.fee
+            totalFee = vehicleType?.fee ?: 0
         } else {
             while (parkedTime > Constants.TWO_HOURS_IN_MILLISECONDS) {
                 surplusTime = parkedTime - Constants.TWO_HOURS_IN_MILLISECONDS
@@ -46,7 +48,7 @@ data class ParkingSpace(var vehicle: Vehicle) {
             for (i in 0..surplusTime step Constants.FIFTEEN_IN_MILLISECONDS) {
                 surplusMinutes++
             }
-            totalFee = Vehicle.VehicleType.CAR.fee + (surplusMinutes * 5)
+            totalFee = vehicleType?.fee ?: 0 + (surplusMinutes * 5)
         }
 
         if (hasDiscountCard) {
@@ -56,11 +58,12 @@ data class ParkingSpace(var vehicle: Vehicle) {
         return totalFee
     }
 
-    private fun onSuccess(fee: Int, vehicle: Vehicle, backFee: Int, countVehicles: Int) : Pair<Int, Int> {
+    private fun onSuccess(fee: Long, vehicle: Vehicle, backFee: Long, countVehicles: Long) : Pair<Long, Long> {
         println("Your fee is $fee. Come back soon.")
         vehiclesList.remove(vehicle)
-        totalEarnings = totalEarnings.copy(countVehicles, fee + backFee)
-        this.backFee = fee
+        totalEarnings = Pair(countVehicles, fee + Singleton.backFee)
+        println(totalEarnings)
+        Singleton.backFee += fee
         return totalEarnings
     }
 

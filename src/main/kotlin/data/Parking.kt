@@ -1,8 +1,10 @@
 package data
 
+import utils.Singleton
+
 data class Parking(val vehicles: MutableSet<Vehicle>) {
 
-    val totalEarnings : Pair<Int, Int> get() = Pair(0, 0)
+    var totalEarnings : Pair<Long, Long> = Pair(0, 0)
 
     private var parkingSize: Int = 20
     fun addVehicle(vehicle: Vehicle): Boolean {
@@ -17,5 +19,10 @@ data class Parking(val vehicles: MutableSet<Vehicle>) {
         for(i in vehicles.indices){
             println(vehicles.elementAt(i).plate)
         }
+    }
+
+    fun showTotalEarnings(){
+        totalEarnings = Singleton.totalEarnings
+        println(totalEarnings)
     }
 }
