@@ -2,7 +2,7 @@ package data
 
 import java.util.*
 
-data class Vehicle(val plate: String, val type: VehicleType, val calendar: Calendar, val discountCard: String? ){
+data class Vehicle(val plate: String?, val type: VehicleType?, val calendar: Calendar, val discountCard: String? ){
     enum class VehicleType(val fee: Int){
         CAR(20),
         BIKE(15),
