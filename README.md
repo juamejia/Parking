@@ -8,8 +8,8 @@ Si, en caso de que a futuro se requiera cambiar los tipos de vehículos ya exist
 Como variable, puesto que siguiendo los lineamientos de la pregunta anterior, si se desean agregar o editar los tipos de vehículos ya existentes se requiere que la propiedad Type sea una variable.
 
 <h2>Pregunta 4 🪲 ¿Dónde deben agregarse las propiedades, en ParkingSpace, Vehicle o en ambos?</h2>
-Dentro de ParkingSpace ya existe una instancia de Vehicle, por lo tanto estas propiedades deben agregarse en ParkingSpace, el cual tendrá la responsabilidad de tener el seguimiento de los vehículos
+Dentro de ParkingSpace ya existe una instancia de Vehicle, por lo tanto estas propiedades deben agregarse en ParkingSpace, el cual tendrá la responsabilidad de tener el seguimiento de los vehículos.
 
 <h2>Pregunta 5 🐤 ¿Cómo indicamos que un tipo de datos puede adquirir esta característica en Kotlin?</h2>
-Podemos indicar que una variable puede ser null ubicando un signo de interrogación al final de la declaración
+Podemos indicar que una variable puede ser null ubicando un signo de interrogación al final de la declaración.
 
